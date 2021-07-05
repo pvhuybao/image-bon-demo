@@ -8,7 +8,7 @@
         transition="dialog-bottom-transition"
       >
         <v-card>
-          <div class="image-box-dialog" @mousedown="dragDownToClose($event)" @mouseup="dragDownToClose($event)">
+          <div class="image-box-dialog">
             <div class="close-btn" @click="closeDialog">
               <img
                 src="https://cdn0.iconfinder.com/data/icons/octicons/1024/x-512.png"
@@ -18,10 +18,12 @@
 
             <v-carousel
               hide-delimiters
-              prev-icon="<<"
-              next-icon=">>"
+              prev-icon="<"
+              next-icon=">"
+              height="70vh"
               v-bind:cycle="false"
               v-model="indexChild"
+              :touchless="isZoom"
               @setCurrentImage="setCurrentImage(indexImage)"
             >
               <v-carousel-item
@@ -29,12 +31,20 @@
                 :key="item.id"
               >
 							<!-- <img :src="item.src" /> -->
-							<image-zoom
-									:regular="item.src" 
-									:click-zoom="true"
-									img-class="zoom-image"
-									alt="Sky">				
-							</image-zoom>
+							<!-- <image-zoom
+                :regular="item.src" 
+                :click-zoom="true"
+                img-class="zoom-image"
+              >				
+							</image-zoom> -->
+              <InnerImageZoom
+                :src="item.src"
+                moveType="drag"
+                :zoomScale="2"
+                :hideHint="true"
+                :afterZoomOut="() => isZoom = false"
+                :afterZoomIn="() => isZoom = true"
+              />
 							</v-carousel-item>
             </v-carousel>
 
@@ -72,12 +82,14 @@
 </template>
 
 <script>
-import imageZoom from 'vue-image-zoomer';
+// import imageZoom from 'vue-image-zoomer';
+import InnerImageZoom from 'vue-inner-image-zoom';
 
 export default {
   name: "ImageBoxComponent",
   components: {
-		imageZoom: imageZoom
+		// imageZoom: imageZoom,
+    InnerImageZoom
 	},
 
   props: {
@@ -88,7 +100,8 @@ export default {
 
   data() {
     return {
-      indexChild: this.indexImage
+      indexChild: this.indexImage,
+      isZoom: false
     };
   },
 
@@ -102,8 +115,8 @@ export default {
       this.indexChild = index;
     },
 
-    dragDownToClose(event) {
-      console.log('event', event);
+    testZoomout() {
+      console.log('testZoomout');
     }
   },
 
@@ -115,7 +128,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .image-box-dialog {
   height: 100vh;
   width: 100%;
@@ -126,7 +139,7 @@ export default {
 .close-btn {
   width: 28px;
   height: 28px;
-	margin-bottom: 16px;
+	margin-bottom: 24px;
   background-color: white;
   border-radius: 50%;
 }
@@ -134,6 +147,10 @@ export default {
 .close-btn img {
   width: 100%;
   height: 100%;
+}
+
+.zoom-image {
+  height: 70vh !important;
 }
 
 .total-image-field {
@@ -172,6 +189,8 @@ export default {
   display: inline-grid;
   align-items: center;
   vertical-align: middle;
+  overflow-y: hidden;
+  border-radius: 5px;
 }
 .others-image-container .image-item img {
   width: 100%;

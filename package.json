@@ -11,6 +11,7 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-image-zoomer": "^1.2.1",
+    "vue-inner-image-zoom": "^1.1.0",
     "vuetify": "^1.5.24"
   },
   "devDependencies": {
