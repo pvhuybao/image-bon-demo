@@ -11,15 +11,15 @@
           <div class="image-box-dialog">
             <div class="close-btn" @click="closeDialog">
               <img
-                src="https://cdn0.iconfinder.com/data/icons/octicons/1024/x-512.png"
+                src="../assets/close-btn.png"
                 alt=""
               />
             </div>
 
             <v-carousel
               hide-delimiters
-              prev-icon="<"
-              next-icon=">"
+              prev-icon="prev-btn-icon"
+              next-icon="next-btn-icon"
               height="70vh"
               v-bind:cycle="false"
               v-model="indexChild"
@@ -39,6 +39,7 @@
 							</image-zoom> -->
               <InnerImageZoom
                 :src="item.src"
+                className="zoom-image"
                 moveType="drag"
                 :zoomScale="2"
                 :hideHint="true"
@@ -121,8 +122,13 @@ export default {
   },
 
   watch: {
-    indexImage() {
-      this.$emit('setCurrentImage', this.indexImage);
+    indexChild() {
+      this.$emit('setCurrentImage', this.indexChild);
+
+      this.$nextTick(() => {
+        var el = this.$el.getElementsByClassName("image-item-selected")[0];
+        el.scrollIntoView();
+      });
     }
   }
 };
@@ -142,6 +148,7 @@ export default {
 	margin-bottom: 24px;
   background-color: white;
   border-radius: 50%;
+  cursor: pointer;
 }
 
 .close-btn img {
@@ -149,7 +156,25 @@ export default {
   height: 100%;
 }
 
-.zoom-image {
+.prev-btn-icon {
+  width: 40px;
+  height: 40px;
+  background-position: 47% center;
+  background-color: rgba(25, 25, 25, 0.5);
+  background-image: url("../assets/prev-icon.png");
+  border-radius: 50%;
+}
+
+.next-btn-icon {
+  width: 40px;
+  height: 40px;
+  background-position: 53% center;
+  background-color: rgba(25, 25, 25, 0.5);
+  background-image: url("../assets/next-icon.png");
+  border-radius: 50%;
+}
+
+.zoom-image img {
   height: 70vh !important;
 }
 
