@@ -6,9 +6,10 @@
         fullscreen
         hide-overlay
         transition="dialog-bottom-transition"
+        :persistent="true"
       >
         <v-card>
-          <div class="image-box-dialog">
+          <div class="image-box-dialog" v-touch:swipe.bottom="closeDialog">
             <div class="close-btn" @click="closeDialog">
               <img
                 src="../assets/close-btn.png"
@@ -23,8 +24,9 @@
               height="70vh"
               v-bind:cycle="false"
               v-model="indexChild"
-              :touchless="isZoom"
               @setCurrentImage="setCurrentImage(indexImage)"
+              v-touch:swipe.left="swipeLeft"
+              v-touch:swipe.right="swipeRight"
             >
               <v-carousel-item
                 v-for="(item) in listImages"
@@ -57,24 +59,19 @@
               <div class="others-image">
 								<div class="image-item" v-for="(item, index) in listImages" 
                   :key="item.id" 
-                  v-bind:class="{ 'image-item-selected': index === indexChild }"
                   @click="setCurrentImage(index)"
                 >
-									<img v-bind:src="item.src" alt="">
+									<img 
+                    v-bind:src="item.src" 
+                    v-bind:class="{ 'image-item-selected': index === indexChild }"
+                    alt=""
+                  >
 								</div>
 								<!-- <div class="image-item" v-for="(item) in listImages" :key="item.id">
 									<img v-bind:src="item.src" alt="">
 								</div> -->
               </div>
             </div>
-
-						<!-- <image-zoom 
-								regular="https://cdn0.iconfinder.com/data/icons/octicons/1024/x-512.png" 
-								zoom="https://cdn0.iconfinder.com/data/icons/octicons/1024/x-512.png" 
-								:zoom-amount="3" 
-								img-class="img-fluid"
-								alt="Sky">				
-						</image-zoom> -->
           </div>
         </v-card>
       </v-dialog>
@@ -83,13 +80,11 @@
 </template>
 
 <script>
-// import imageZoom from 'vue-image-zoomer';
 import InnerImageZoom from 'vue-inner-image-zoom';
 
 export default {
   name: "ImageBoxComponent",
   components: {
-		// imageZoom: imageZoom,
     InnerImageZoom
 	},
 
@@ -102,7 +97,13 @@ export default {
   data() {
     return {
       indexChild: this.indexImage,
-      isZoom: false
+      isZoom: false,
+
+      options: {
+        index: this.indexImage,
+        closeOnScroll: false,
+        pinchToClose: false,
+      },
     };
   },
 
@@ -116,8 +117,12 @@ export default {
       this.indexChild = index;
     },
 
-    testZoomout() {
-      console.log('testZoomout');
+    swipeLeft() {
+      this.indexChild = (this.indexChild + 1) > (this.listImages.length - 1) ? 0: (this.indexChild + 1);
+    },
+
+    swipeRight() {
+      this.indexChild = (this.indexChild - 1) < 0 ? (this.listImages.length - 1): (this.indexChild - 1);
     }
   },
 
@@ -129,7 +134,17 @@ export default {
         var el = this.$el.getElementsByClassName("image-item-selected")[0];
         el.scrollIntoView();
       });
-    }
+    },
+
+    // isZoom(newVal) {
+    //   console.log('newVal', newVal);
+    //   if(newVal) {
+    //     this.$nextTick(() => {
+    //       var el = this.$el.getElementsByClassName("iiz__zoom-img")[0];
+    //       el.addEventListener()
+    //     })
+    //   }
+    // }
   }
 };
 </script>
@@ -154,6 +169,7 @@ export default {
 .close-btn img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 
 .prev-btn-icon {
@@ -174,8 +190,10 @@ export default {
   border-radius: 50%;
 }
 
-.zoom-image img {
+.zoom-image img.iiz__img {
   height: 70vh !important;
+  width: 100vh;
+  object-fit: contain;
 }
 
 .total-image-field {
@@ -205,6 +223,7 @@ export default {
   white-space: nowrap;
   overflow-x: auto;
   width: 100%;
+  padding-bottom: 12px;
 }
 .others-image-container .image-item {
   width: 56px;
@@ -217,8 +236,12 @@ export default {
   overflow-y: hidden;
   border-radius: 5px;
 }
+
 .others-image-container .image-item img {
-  width: 100%;
+  /* width: 100%; */
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
   /* height: 100%; */
 	/* border-radius: 5px; */
 }
@@ -231,7 +254,9 @@ export default {
 	border: 2px solid #00BCC3;
   border-radius: 5px;
 }
+</style>
 
+<style scoped>
 /* Custom scroll bar */
 /* width */
 ::-webkit-scrollbar {
@@ -240,12 +265,12 @@ export default {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #222222;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #4E4E4E;
 }
 
 /* Handle on hover */

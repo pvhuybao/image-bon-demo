@@ -8,7 +8,7 @@
       :indexImage="indexImage" 
       :listImages="listImages" 
       :isOpenDialog="isOpenDialog" 
-      @closeDialog="closeDialog" 
+      @closeDialog="closeDialog"
     />
   </div>
 </template>
