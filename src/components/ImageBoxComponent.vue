@@ -201,7 +201,7 @@ export default {
 }
 
 .total-image {
-  margin: 10px auto;
+  margin: 4% auto;
   width: fit-content;
   background-color: #222222;
   text-align: center;
@@ -253,6 +253,15 @@ export default {
 .image-item-selected {
 	border: 2px solid #00BCC3;
   border-radius: 5px;
+}
+
+@media (max-width: 720px) {
+  .image-box-dialog {
+    padding: 32px 0px;
+  }
+  .close-btn {
+    margin-left: 16px;
+  }
 }
 </style>
 
