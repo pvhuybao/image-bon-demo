@@ -131,7 +131,7 @@ export default {
     zoomOutAfterSwipe() {
       this.$nextTick(() => {
         var el = this.$el.getElementsByClassName("iiz__zoom-img")[0];
-        el.click();
+        if(el) el.click();
       });
     }
   },
