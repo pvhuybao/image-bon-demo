@@ -110,6 +110,7 @@ export default {
   methods: {
     closeDialog() {
       this.$emit('closeDialog', false);
+      this.zoomOutAfterSwipe();
     },
 
     setCurrentImage(index) {
@@ -119,10 +120,19 @@ export default {
 
     swipeLeft() {
       this.indexChild = (this.indexChild + 1) > (this.listImages.length - 1) ? 0: (this.indexChild + 1);
+      this.zoomOutAfterSwipe();
     },
 
     swipeRight() {
       this.indexChild = (this.indexChild - 1) < 0 ? (this.listImages.length - 1): (this.indexChild - 1);
+      this.zoomOutAfterSwipe();
+    },
+
+    zoomOutAfterSwipe() {
+      this.$nextTick(() => {
+        var el = this.$el.getElementsByClassName("iiz__zoom-img")[0];
+        el.click();
+      });
     }
   },
 
@@ -194,14 +204,16 @@ export default {
   height: 70vh !important;
   width: 100vh;
   object-fit: contain;
+  user-select: none;
 }
 
 .total-image-field {
   text-align: center;
+  padding: calc(4% * (9/16));
 }
 
 .total-image {
-  margin: 4% auto;
+  margin: auto;
   width: fit-content;
   background-color: #222222;
   text-align: center;
